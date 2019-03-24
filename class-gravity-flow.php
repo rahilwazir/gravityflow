@@ -955,6 +955,9 @@ PRIMARY KEY  (id)
 						array(
 							'query'      => 'page=gravityflow-activity',
 						),
+						array(
+							'query'      => 'page=gravityflow-welcome',
+						),
 					),
 				),
 				array(
@@ -4191,10 +4194,10 @@ jQuery('#setting-entry-filter-{$name}').gfFilterUI({$filter_settings_json}, {$va
 			$menu_items = array();
 
 			$inbox_item = array(
-				'name' => 'gravityflow-inbox',
-				'label' => esc_html( $this->translate_navigation_label( 'inbox' ) ),
+				'name'       => 'gravityflow-inbox',
+				'label'      => esc_html( $this->translate_navigation_label( 'inbox' ) ),
 				'permission' => 'gravityflow_inbox',
-				'callback' => array( $this, 'inbox' ),
+				'callback'   => array( $this, 'inbox' ),
 			);
 			$menu_items[] = $inbox_item;
 
@@ -4202,45 +4205,53 @@ jQuery('#setting-entry-filter-{$name}').gfFilterUI({$filter_settings_json}, {$va
 
 			if ( ! empty( $form_ids ) ) {
 				$menu_item = array(
-					'name' => 'gravityflow-submit',
-					'label' => esc_html( $this->translate_navigation_label( 'submit' ) ),
+					'name'       => 'gravityflow-submit',
+					'label'      => esc_html( $this->translate_navigation_label( 'submit' ) ),
 					'permission' => 'gravityflow_submit',
-					'callback' => array( $this, 'submit' ),
+					'callback'   => array( $this, 'submit' ),
 				);
 				$menu_items[] = $menu_item;
 			}
 
 			$status_item = array(
-				'name' => 'gravityflow-status',
-				'label' => esc_html( $this->translate_navigation_label( 'status' ) ),
+				'name'       => 'gravityflow-status',
+				'label'      => esc_html( $this->translate_navigation_label( 'status' ) ),
 				'permission' => 'gravityflow_status',
-				'callback' => array( $this, 'status' ),
+				'callback'   => array( $this, 'status' ),
 			);
 			$menu_items[] = $status_item;
 
 			$support_item = array(
-				'name' => 'gravityflow-support',
-				'label' => esc_html( $this->translate_navigation_label( 'support' ) ),
+				'name'       => 'gravityflow-support',
+				'label'      => esc_html( $this->translate_navigation_label( 'support' ) ),
 				'permission' => 'gform_full_access',
-				'callback' => array( $this, 'support' ),
+				'callback'   => array( $this, 'support' ),
 			);
 			$menu_items[] = $support_item;
 
 			$reports_item = array(
-				'name' => 'gravityflow-reports',
-				'label' => esc_html( $this->translate_navigation_label( 'reports' ) ),
+				'name'       => 'gravityflow-reports',
+				'label'      => esc_html( $this->translate_navigation_label( 'reports' ) ),
 				'permission' => 'gravityflow_reports',
-				'callback' => array( $this, 'reports' )
+				'callback'   => array( $this, 'reports' ),
 			);
 			$menu_items[] = $reports_item;
 
 			$activity_item = array(
-				'name' => 'gravityflow-activity',
-				'label' => esc_html( $this->translate_navigation_label( 'activity' ) ),
+				'name'       => 'gravityflow-activity',
+				'label'      => esc_html( $this->translate_navigation_label( 'activity' ) ),
 				'permission' => 'gravityflow_activity',
-				'callback' => array( $this, 'activity' ),
+				'callback'   => array( $this, 'activity' ),
 			);
 			$menu_items[] = $activity_item;
+
+			$welcome_item = array(
+				'name'       => 'gravityflow-welcome',
+				'label'      => esc_html( $this->translate_navigation_label( 'welcome' ) ),
+				'permission' => 'gravityflow_welcome',
+				'callback'   => array( $this, 'welcome' ),
+			);
+			$menu_items[] = $welcome_item;
 
 			$menu_items = apply_filters( 'gravityflow_menu_items', $menu_items );
 
@@ -5424,6 +5435,97 @@ jQuery('#setting-entry-filter-{$name}').gfFilterUI({$filter_settings_json}, {$va
 
 				require_once( $this->get_base_path() . '/includes/pages/class-reports.php' );
 				Gravity_Flow_Reports::display( $args );
+				?>
+			</div>
+			<?php
+		}
+
+		/**
+		 * Displays the Welcome UI
+		 */
+		 public function welcome() {
+
+			if ( $this->maybe_display_installation_wizard() ) {
+				return;
+			}
+
+			$this->welcome_page();
+		}
+
+		/**
+		 * Renders the reports page.
+		 *
+		 * @param array $args The reports page arguments.
+		 */
+		 public function welcome_page( $args = array() ) {
+			$defaults = array(
+				'display_header' => true,
+			);
+			$args = array_merge( $defaults, $args );
+			?>
+			<div class="wrap gf_entry_wrap gravityflow_workflow_wrap gravityflow_workflow_reports">
+
+				<?php if ( $args['display_header'] ) : ?>
+					<h2 class="gf_admin_page_title">
+						<img width="45" height="22" src="<?php echo esc_url( gravity_flow()->get_base_url() ); ?>/images/gravity-flow-icon-cropped.svg" style="margin-right:5px;"/>
+						<span><?php esc_html_e( 'Welcome to Gravity Flow', 'gravityflow' ); ?> (v<?php esc_html_e( $this->_version ); ?>)
+</span>
+					</h2>
+
+					<?php GFCommon::display_admin_message(); ?>
+
+					<div id="gf_form_toolbar">
+						<ul id="gf_form_toolbar_links">
+						<?php $menu_items = array();
+
+						$active_class = 'gf_toolbar_active';
+						$not_active_class = '';
+
+						$menu_items['start'] = array(
+							'label'        => esc_html( $this->translate_navigation_label( 'welcome' ) ),
+							'icon'         => '<i class="fa fa-hand-o-right fa-lg"></i>',
+							'title'        => __( 'Getting Started', 'gravityflow' ),
+							'url'          => '?page=gravityflow-welcome&tab=start',
+							'menu_class'   => 'gf_form_toolbar_editor',
+							'link_class'   => ( rgget( 'page' ) == 'gravityflow-welcome' ) && ( rgget( 'tab' ) == 'start' || rgget( 'tab' ) == '' ) ? $active_class : $not_active_class,
+							'capabilities' => 'gravityflow_inbox',
+							'priority'     => 1000,
+						);
+
+						$menu_items['changes'] = array(
+							'label'          => __( 'List of Changes', 'gravityflow' ),
+							'icon'           => '<i class="fa fa-pencil fa-lg"></i>',
+							'title'          => __( 'Recent updates to Gravity Flow', 'gravityflow' ),
+							'url'            => '?page=gravityflow-welcome&tab=changes',
+							'menu_class'     => 'gf_form_toolbar_settings',
+							'link_class'   => ( rgget( 'page' ) == 'gravityflow-welcome' ) && rgget( 'tab' ) == 'changes' ? $active_class : $not_active_class,
+							'capabilities'   => 'gravityflow_inbox',
+							'priority'       => 800,
+						);
+
+						$menu_items['credits'] = array(
+							'label'          => __( 'Credits', 'gravityflow' ),
+							'icon'           => '<i class="fa fa fa-trophy fa-lg"></i>',
+							'title'          => __( 'Open Source FTW', 'gravityflow' ),
+							'url'            => '?page=gravityflow-welcome&tab=credits',
+							'menu_class'     => 'gf_form_toolbar_settings',
+							'link_class'   => ( rgget( 'page' ) == 'gravityflow-welcome' ) && rgget( 'tab' ) == 'credits' ? $active_class : $not_active_class,
+							'capabilities'   => 'gravityflow_reports',
+							'priority'       => 700,
+						);
+
+						echo GFForms::format_toolbar_menu_items( $menu_items );
+
+						?>
+						</ul>
+					</div>
+			
+					
+					<?php
+				endif;
+
+				require_once( $this->get_base_path() . '/includes/pages/class-welcome.php' );
+				Gravity_Flow_Welcome::display( $args );
 				?>
 			</div>
 			<?php
@@ -7514,6 +7616,7 @@ AND m.meta_value='queued'";
 				'support'  => esc_html__( 'Support', 'gravityflow' ),
 				'reports'  => esc_html__( 'Reports', 'gravityflow' ),
 				'activity' => esc_html__( 'Activity', 'gravityflow' ),
+				'welcome'  => esc_html__( 'Getting Started', 'gravityflow' ),
 			);
 		}
 
