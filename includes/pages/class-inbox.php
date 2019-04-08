@@ -251,7 +251,7 @@ class Gravity_Flow_Inbox {
 				$meta = $step->get_feed_meta();
 
 				if ( $meta && isset( $meta['due_date'], $meta['due_date_highlight_type'], $meta['due_date_highlight_color'] ) ) {
-					if ( $meta['due_date_highlight_type'] == 'color' && preg_match( '/^#[a-f0-9]{6}$/i', $meta['due_date_highlight_color'] ) ) {
+					if ( $meta['due_date'] && $meta['due_date_highlight_type'] == 'color' && preg_match( '/^#[a-f0-9]{6}$/i', $meta['due_date_highlight_color'] ) ) {
 						$due_date_highlight_color = $meta['due_date_highlight_color'];
 					}
 				}
