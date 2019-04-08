@@ -1,1 +1,2 @@
 - Fixed an issue with inbox shortcode displaying a default value for due date when no step settings had been defined.
+- Fixed an issue with calculation of a step being overdue or not based on step starting time.
